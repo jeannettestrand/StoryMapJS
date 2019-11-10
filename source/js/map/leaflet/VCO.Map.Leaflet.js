@@ -68,7 +68,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this.bounds_array = this._getAllMarkersBounds(this._markers);
 		}
 
-		this._tile_layer_mini = this._createTileLayer(this.options.map_type);
+		// Mini map will display base_map if parameter was set, or the map_type parameter.
+		var miniMapType = (this.options.base_map != "") ? this.options.base_map : this.options.map_type;
+
+		this._tile_layer_mini = this._createTileLayer(miniMapType);
 		this._mini_map = new L.Control.MiniMap(this._tile_layer_mini, {
 			width: 				150,
 			height: 			100,
