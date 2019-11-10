@@ -12,13 +12,20 @@ VCO.Map.Leaflet = VCO.Map.extend({
 
 
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
+
+		// Catch if a base map has been set. The basemap can be either a string for a simple service, or an object for WMS services
+    if ( (typeof this.options.base_map === "string" && this.options.base_map !== "") || !isEmptyObject(this.options.base_map) ) {
+      this._base_layer = this._createTileLayer(this.options.base_map);
+      this._map.addLayer(this._base_layer);
+    }
+
 		this._map.on("load", this._onMapLoaded, this);
 
 
 		this._map.on("moveend", this._onMapMoveEnd, this);
 		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&#x25a0;</span> StoryMapJS</a>");
 
-		var map_type_arr = this.options.map_type.split(':');
+		//var map_type_arr = this.options.map_type.split(':');
 
 		// Create Tile Layer
 		this._tile_layer = this._createTileLayer(this.options.map_type);
@@ -160,9 +167,11 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createTileLayer: function(map_type, options) {
 		var _tilelayer = null,
-			_map_type_arr = map_type.split(':'),
-			_options = {},
-			_attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
+            _map_type_arr = (typeof map_type === "object") ? map_type.url.split(':') : map_type.split(':'),
+            _map_options = (typeof map_type === "object") ? map_type.options : {},
+            _options = {},
+            _attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
+
 
 		if (options) {
 			_options = options; // WARNING this is just a reference not a copy. If the idea was to protect options it isn't doing that.
@@ -211,7 +220,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 				_options.attribution 	= _attribution_knightlab + this.options.attribution;
 				_tilelayer = new L.TileLayer(this.options.map_type, _options);
 				break;
-
+			case 'wms':
+				_options.attribution = _attribution_knightlab + this.options.attribution;
+				_tilelayer = new L.TileLayer.WMS(map_type.url.slice(4), _map_options);
+				break;
 			default:
 				_tilelayer = new L.StamenTileLayer('toner', _options);
 				break;
@@ -663,7 +675,13 @@ L.Map.include({
 	}
 
 });
-
+function isEmptyObject(obj) {
+ var empt = true;
+ for(var key in obj) {
+		 if(obj.hasOwnProperty(key)) empt = false;
+ }
+ return empt;
+};
 L.TileLayer.include({
 	getTiles: function() {
 		return this._tiles;

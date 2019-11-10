@@ -112,6 +112,7 @@
 
 		// TileLayerWMS WMS tile layer.
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/tile/TileLayer.js";
+			// @codekit-prepend "map/leaflet/leaflet-src/layer/tile/TileLayer.WMS.js";
 
 		// TileLayerCanvas Tile layer made from canvases (for custom drawing purposes)
 			// @codekit-prepend "map/leaflet/leaflet-src/layer/tile/TileLayer.Canvas.js";
@@ -317,7 +318,12 @@ VCO.StoryMap = VCO.Class.extend({
 			// interaction
 			dragging: 				true,
 			trackResize: 			true,
-			map_type: 				"stamen:toner-lite",
+			// In event either base_map or map_type data source is WMS, the url and options will be provided in an object as follows:
+      //base_map: {url:"", // to provide a base map url
+      //          options: {} // Used if required by map service
+      //        }
+			map_type: "stamen:toner-lite", // if WMS is desired, map_type will be an object
+			base_map: "", // will not process unless given a value
 			attribution: 			"",
 			map_mini: 				true,
 			map_subdomains: 		"",
@@ -350,7 +356,8 @@ VCO.StoryMap = VCO.Class.extend({
 			show_lines: 			true,
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
-			language:               "en"
+			language:               "en",
+			wms_options: {}
 		};
 
 		// Current Slide
