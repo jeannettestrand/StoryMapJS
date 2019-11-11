@@ -53,12 +53,12 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	},
 
 	_updateLayers: function(curr, last) {
-		if (typeof curr == "number" && this.data.slides[curr].location && this.data.slides[curr].location.layer) {
-			this._addLayer(curr);
-		}
-		if (typeof last == "number" && this.data.slides[last].location && this.data.slides[last].location.layer) {
-			this._removeLayer(last);
-		}
+			if (this.data.slides[curr].location && this.data.slides[curr].location.layer) {
+				this._addLayer(curr);
+			}
+			if (curr !== last && this.data.slides[last].location && this.data.slides[last].location.layer) {
+				this._removeLayer(last);
+			}
 	},
 
 	_removeLayer: function(i) {
@@ -72,8 +72,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this.data.slides[i].location.leafletLayer = this._createTileLayer(this.data.slides[i].location.layer);
 		}
 		this.data.slides[i].location.leafletLayer.addTo(this._map);
-		this.data.slides[i].location.leafletLayer.bringToFront();
-
 	},
 
 	/*	Create Mini Map
@@ -283,7 +281,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._markers.push(marker);
 		marker.marker_number = this._markers.length - 1;
 		this.fire("markerAdded", marker);
-
 	},
 
 	_addMarker: function(marker) {

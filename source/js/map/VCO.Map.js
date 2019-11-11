@@ -140,15 +140,12 @@ VCO.Map = VCO.Class.extend({
 		this._updateDisplay(w, h, animate, d, offset);
 	},
 
-	goTo: function(n, lastN, change) {
-
-    this._updateLayers(n, lastN);
-
+	goTo: function(n, change) {
 		if (n < this._markers.length && n >= 0) {
 			var zoom = 0,
-				previous_marker = this.current_marker;
-
+			previous_marker = this.current_marker;
 			this.current_marker = n;
+      this._updateLayers(this.current_marker, previous_marker);
 
 			var marker = this._markers[this.current_marker];
 

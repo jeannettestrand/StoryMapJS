@@ -8,9 +8,6 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-
-		console.log(d);
-		console.log(o.use_custom_markers);
 		var icon = {}; //new L.Icon.Default();
 
 		if (d.location && d.location.lat && d.location.lon) {
@@ -38,7 +35,6 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				title: 		d.text.headline,
 				icon: 		this._icon
 			});
-
 			this._marker.on("click", this._onMarkerClick, this);
 
 			if (o.map_popup) {

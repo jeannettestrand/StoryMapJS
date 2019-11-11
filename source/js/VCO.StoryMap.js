@@ -362,7 +362,6 @@ VCO.StoryMap = VCO.Class.extend({
 
 		// Current Slide
 		this.current_slide = this.options.start_at_slide;
-		this.previous_slide = undefined;
 
 		// Animation Objects
 		this.animator_map = null;
@@ -459,7 +458,6 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	goTo: function(n) {
 		if (n != this.current_slide) {
-			this.previous_slide = this.current_slide;
 			this.current_slide = n;
 			this._storyslider.goTo(this.current_slide);
 			this._map.goTo(this.current_slide);
@@ -728,16 +726,14 @@ VCO.StoryMap = VCO.Class.extend({
 
 	_onSlideChange: function(e) {
 		if (this.current_slide != e.current_slide) {
-			this.previous_slide = this.current_slide;
 			this.current_slide = e.current_slide;
-			this._map.goTo(this.current_slide, this.previous_slide);
+			this._map.goTo(this.current_slide);
 			this.fire("change", {current_slide: this.current_slide}, this);
 		}
 	},
 
 	_onMapChange: function(e) {
 		if (this.current_slide != e.current_marker) {
-			this.previous_slide = this.current_slide;
 			this.current_slide = e.current_marker;
 			this._storyslider.goTo(this.current_slide);
 			this.fire("change", {current_slide: this.current_slide}, this);
@@ -749,9 +745,8 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 
 	_onBackToStart: function(e) {
-		this.previous_slide = this.current_slide;
 		this.current_slide = 0;
-		this._map.goTo(this.current_slide, this.previous_slide);
+		this._map.goTo(this.current_slide);
 		this._storyslider.goTo(this.current_slide);
 		this.fire("change", {current_slide: this.current_slide}, this);
 	},

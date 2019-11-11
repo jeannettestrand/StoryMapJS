@@ -35,10 +35,10 @@ VCO.Events = {
 	},
 
 	fireEvent: function (/*String*/ type, /*(optional) Object*/ data) {
+		console.log("fireEvent: " + type);
 		if (!this.hasEventListeners(type)) {
 			return this;
 		}
-
 		var event = VCO.Util.extend({
 			type: type,
 			target: this
