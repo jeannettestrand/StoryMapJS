@@ -18,8 +18,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
       this._map.addLayer(this._base_layer);
     }
 
-
-
 		this._map.on("moveend", this._onMapMoveEnd, this);
 		this._map.attributionControl.setPrefix("<a href='http://storymap.knightlab.com/' target='_blank' class='vco-knightlab-brand'><span>&#x25a0;</span> StoryMapJS</a>");
 

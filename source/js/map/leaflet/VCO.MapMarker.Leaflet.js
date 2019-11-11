@@ -3,14 +3,16 @@
 ================================================== */
 
 VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
-	
-	
+
+
 	/*	Create Marker
 	================================================== */
 	_createMarker: function(d, o) {
-		
+
+		console.log(d);
+		console.log(o.use_custom_markers);
 		var icon = {}; //new L.Icon.Default();
-		
+
 		if (d.location && d.location.lat && d.location.lon) {
 			this.data.real_marker = true;
 			var use_custom_marker = o.use_custom_markers || d.location.use_custom_marker;
@@ -22,31 +24,35 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 				};
 				this._icon = this._createIcon();
 			} else if (use_custom_marker && d.location.image) {
-				this._custom_image_icon = d.location.image;
+				this._custom_image_icon = {
+					url:d.location.image,
+					size: d.location.imageSize || [50,100],
+					anchor: this._customIconAnchor(d.location.imageSize)
+				}
 				this._icon = this._createImage();
 			} else {
 				this._icon = this._createDefaultIcon(false);
 			}
-			
+
 			this._marker = new L.marker([d.location.lat, d.location.lon], {
 				title: 		d.text.headline,
 				icon: 		this._icon
 			});
-		
-			this._marker.on("click", this._onMarkerClick, this); 
-			
+
+			this._marker.on("click", this._onMarkerClick, this);
+
 			if (o.map_popup) {
 				this._createPopup(d, o);
 			}
 		}
 	},
-	
+
 	_addTo: function(m) {
 		if (this.data.real_marker) {
 			this._marker.addTo(m);
 		}
 	},
-	
+
 	_createPopup: function(d, o) {
 		/*
 		var html = "";
@@ -54,10 +60,10 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 		this._marker.bindPopup(html, {closeButton:false, offset:[0, 43]});
 		*/
 	},
-	
+
 	_active: function(a) {
 		var self = this;
-		
+
 		if (this.data.media && this.data.media.mediatype) {
 			this.media_icon_class = "vco-mapmarker-icon vco-icon-" + this.data.media.mediatype.type;
 		} else {
@@ -90,7 +96,7 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 
 	_createImage: function(active) { // TODO: calculate shadow dimensions
 		var className = active ? "vco-mapmarker-image-icon-active" : "vco-mapmarker-image-icon";
-		return new L.icon({iconUrl: url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className: className});
+		return new L.icon({iconUrl: this._custom_image_icon.url, iconSize: [48], iconAnchor:[24, 48], shadowSize: [68, 95], shadowAnchor: [22, 94], className: className});
 	},
 
 	_createDefaultIcon: function(active) {
@@ -105,15 +111,15 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			return [ 24, 48 ];
 		}
 	},
-	
+
 	_openPopup: function() {
 		this._marker.openPopup();
 	},
-	
+
 	_setIcon: function() {
 		this._marker.setIcon(this._icon);
 	},
-	
+
 	_location: function() {
 		if (this.data.real_marker) {
 			return this._marker.getLatLng();
@@ -121,5 +127,5 @@ VCO.MapMarker.Leaflet = VCO.MapMarker.extend({
 			return {};
 		}
 	}
-	
+
 });

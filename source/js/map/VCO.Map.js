@@ -142,10 +142,6 @@ VCO.Map = VCO.Class.extend({
 
 	goTo: function(n, lastN, change) {
 
-    console.log("VCO.Map goTo");
-    console.log(n);
-    console.log(lastN);
-    console.log("----------------------");
     this._updateLayers(n, lastN);
 
 		if (n < this._markers.length && n >= 0) {
@@ -331,7 +327,6 @@ VCO.Map = VCO.Class.extend({
 
 	initialMapLocation: function() {
 		if (this._loaded.data && this._loaded.map) {
-      console.log("initialMapLocation");
 			this.goTo(this.options.start_at_slide, undefined, true);
 			this._initialMapLocation();
 		}

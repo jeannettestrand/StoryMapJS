@@ -357,7 +357,7 @@ VCO.StoryMap = VCO.Class.extend({
 			show_history_line: 		true,
 			api_key_flickr: 		"f2cc870b4d233dd0a5bfe73fd0d64ef0",
 			language:               "en",
-			wms_options: {}
+			use_custom_markers: false
 		};
 
 		// Current Slide
@@ -736,7 +736,6 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 
 	_onMapChange: function(e) {
-		console.log("onMapChange");
 		if (this.current_slide != e.current_marker) {
 			this.previous_slide = this.current_slide;
 			this.current_slide = e.current_marker;
