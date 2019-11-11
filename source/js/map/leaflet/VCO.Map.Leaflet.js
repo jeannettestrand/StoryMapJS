@@ -10,7 +10,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createMap: function() {
 
-
 		this._map = new L.map(this._el.map, {scrollWheelZoom:false, zoomControl:!this.options.map_mini});
 
 		// Catch if a base map has been set. The basemap can be either a string for a simple service, or an object for WMS services
@@ -19,7 +18,6 @@ VCO.Map.Leaflet = VCO.Map.extend({
       this._map.addLayer(this._base_layer);
     }
 
-		this._map.on("load", this._onMapLoaded, this);
 
 
 		this._map.on("moveend", this._onMapMoveEnd, this);
@@ -34,6 +32,8 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		// Add Tile Layer
 		this._map.addLayer(this._tile_layer);
 
+		this._map.on("load", this._onMapLoaded, this);
+		
 		// Add Zoomify Image Layer
 		if (this._image_layer) {
 			this._map.addLayer(this._image_layer);
@@ -52,9 +52,28 @@ VCO.Map.Leaflet = VCO.Map.extend({
 			this._line_active.setStyle({opacity:0});
 			this._line.setStyle({opacity:0});
 		}
+	},
 
+	_updateLayers: function(curr, last) {
+		if (typeof curr == "number" && this.data.slides[curr].location && this.data.slides[curr].location.layer) {
+			this._addLayer(curr);
+		}
+		if (typeof last == "number" && this.data.slides[last].location && this.data.slides[last].location.layer) {
+			this._removeLayer(last);
+		}
+	},
 
+	_removeLayer: function(i) {
+		if (this.data.slides[i].location.leafletLayer) {
+			this._map.removeLayer(this.data.slides[i].location.leafletLayer);
+		}
+	},
 
+	_addLayer: function(i) {
+		if (!this.data.slides[i].location.leafletLayer) {
+			this.data.slides[i].location.leafletLayer = this._createTileLayer(this.data.slides[i].location.layer);
+		}
+		this._map.addLayer(this.data.slides[i].location.leafletLayer);
 	},
 
 	/*	Create Mini Map
@@ -170,11 +189,10 @@ VCO.Map.Leaflet = VCO.Map.extend({
 	================================================== */
 	_createTileLayer: function(map_type, options) {
 		var _tilelayer = null,
-            _map_type_arr = (typeof map_type === "object") ? map_type.url.split(':') : map_type.split(':'),
-            _map_options = (typeof map_type === "object") ? map_type.options : {},
-            _options = {},
-            _attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
-
+    _map_type_arr = (typeof map_type === "object") ? map_type.url.split(':') : map_type.split(':'),
+    _map_options = (typeof map_type === "object") ? map_type.options : {},
+    _options = {},
+    _attribution_knightlab = "<a href='http://leafletjs.com' title='A JS library for interactive maps'>Leaflet</a> | "
 
 		if (options) {
 			_options = options; // WARNING this is just a reference not a copy. If the idea was to protect options it isn't doing that.

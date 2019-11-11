@@ -319,8 +319,8 @@ VCO.StoryMap = VCO.Class.extend({
 			dragging: 				true,
 			trackResize: 			true,
 			// In event either base_map or map_type data source is WMS, the url and options will be provided in an object as follows:
-      //base_map: {url:"", // to provide a base map url
-      //          options: {} // Used if required by map service
+      //base_map: {url:"", // to provide a WMS service url
+      //          options: {} // Used to provide additional parameters to the WMS service
       //        }
 			map_type: "stamen:toner-lite", // if WMS is desired, map_type will be an object
 			base_map: "", // will not process unless given a value
@@ -362,6 +362,7 @@ VCO.StoryMap = VCO.Class.extend({
 
 		// Current Slide
 		this.current_slide = this.options.start_at_slide;
+		this.previous_slide = undefined;
 
 		// Animation Objects
 		this.animator_map = null;
@@ -458,6 +459,7 @@ VCO.StoryMap = VCO.Class.extend({
 	================================================== */
 	goTo: function(n) {
 		if (n != this.current_slide) {
+			this.previous_slide = this.current_slide;
 			this.current_slide = n;
 			this._storyslider.goTo(this.current_slide);
 			this._map.goTo(this.current_slide);
@@ -517,6 +519,7 @@ VCO.StoryMap = VCO.Class.extend({
 		this._el.storyslider.style.top 	= "1px";
 
 		// Create Map using preferred Map API
+
 		this._map = new VCO.Map.Leaflet(this._el.map, this.data, this.options);
 		this.map = this._map._map; // For access to Leaflet Map.
 		this._map.on('loaded', this._onMapLoaded, this);
@@ -725,14 +728,16 @@ VCO.StoryMap = VCO.Class.extend({
 
 	_onSlideChange: function(e) {
 		if (this.current_slide != e.current_slide) {
+			this.previous_slide = this.current_slide;
 			this.current_slide = e.current_slide;
-			this._map.goTo(this.current_slide);
+			this._map.goTo(this.current_slide, this.previous_slide);
 			this.fire("change", {current_slide: this.current_slide}, this);
 		}
 	},
 
 	_onMapChange: function(e) {
 		if (this.current_slide != e.current_marker) {
+			this.previous_slide = this.current_slide;
 			this.current_slide = e.current_marker;
 			this._storyslider.goTo(this.current_slide);
 			this.fire("change", {current_slide: this.current_slide}, this);
@@ -744,8 +749,9 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 
 	_onBackToStart: function(e) {
+		this.previous_slide = this.current_slide;
 		this.current_slide = 0;
-		this._map.goTo(this.current_slide);
+		this._map.goTo(this.current_slide, this.previous_slide);
 		this._storyslider.goTo(this.current_slide);
 		this.fire("change", {current_slide: this.current_slide}, this);
 	},
