@@ -33,7 +33,7 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		this._map.addLayer(this._tile_layer);
 
 		this._map.on("load", this._onMapLoaded, this);
-		
+
 		// Add Zoomify Image Layer
 		if (this._image_layer) {
 			this._map.addLayer(this._image_layer);
@@ -73,7 +73,9 @@ VCO.Map.Leaflet = VCO.Map.extend({
 		if (!this.data.slides[i].location.leafletLayer) {
 			this.data.slides[i].location.leafletLayer = this._createTileLayer(this.data.slides[i].location.layer);
 		}
-		this._map.addLayer(this.data.slides[i].location.leafletLayer);
+		this.data.slides[i].location.leafletLayer.addTo(this._map);
+		this.data.slides[i].location.leafletLayer.bringToFront();
+
 	},
 
 	/*	Create Mini Map

@@ -309,7 +309,7 @@ VCO.Map = VCO.Class.extend({
 			}
 
 		}
-		trace("MAX ZOOM: " + this.zoom_min_max.max + " MIN ZOOM: " + this.zoom_min_max.min);
+		//trace("MAX ZOOM: " + this.zoom_min_max.max + " MIN ZOOM: " + this.zoom_min_max.min);
 	},
 
 	updateMinMaxZoom: function(zoom) {
@@ -534,8 +534,12 @@ VCO.Map = VCO.Class.extend({
 			this.createMiniMap();
 		}
 
-		this.initialMapLocation();
 		this.fire("loaded", this.data);
+    /*  Call initialMapLocation after the map loaded event is fired.
+        This ensures that first slide map layers are loaded after the
+        base maps are loaded.
+    */
+    this.initialMapLocation();
 	},
 
 	_onWheel: function(e) {

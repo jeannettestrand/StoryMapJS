@@ -736,6 +736,7 @@ VCO.StoryMap = VCO.Class.extend({
 	},
 
 	_onMapChange: function(e) {
+		console.log("onMapChange");
 		if (this.current_slide != e.current_marker) {
 			this.previous_slide = this.current_slide;
 			this.current_slide = e.current_marker;
